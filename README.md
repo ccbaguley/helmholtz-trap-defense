@@ -15,5 +15,22 @@ Instead of traditional static antivirus scanning, this framework employs:
    ```
 3. Deploy the resulting executable from the `/dist` directory as a permanent background system service utilizing Windows Task Scheduler running with `SYSTEM` privileges.
 
+## Deployment Verification
+
+To confirm that the background service is actively running and successfully monitoring the network interfaces, run the following commands from an **Administrative Command Prompt** or **PowerShell**:
+
+### 1. Verify Network Listeners
+Check if the daemon has successfully claimed and bound to the required framework ports (`5555`, `5353`, `5223`, `8443`):
+```cmd
+netstat -ano | findstr "5555 5353 5223 8443"
+```
+*A successful configuration will return lines marked as **`LISTENING`** along with a Process ID (PID) at the far right.*
+
+### 2. Verify Background Process Status
+Cross-reference the listening PID or confirm that the binary is actively running under the `SYSTEM` context:
+```cmd
+tasklist /FI "IMAGENAME eq HelmholtzTrap.exe"
+```
+
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
