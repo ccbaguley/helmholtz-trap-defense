@@ -69,23 +69,19 @@ Get-Process -Name "HelmholtzTrap"
 ```
 *Verification Check:* Confirm that the process is actively listed with its unique ID (PID).
 
-### Step 3: Verify the Resonator Trap Functionality
-Test whether the Helmholtz Resonance Chamber is actively intercepting traffic and holding connection channels.
+### Step 3: Verify the Resonator Trap Functionality (Local Loopback Test)
+Test whether the Helmholtz Resonance Chamber is actively intercepting traffic and holding connection channels locally.
 
-1. Find the local IP address of your host machine running the daemon by running this command in its PowerShell window (works across all network interfaces):
+1. Open a PowerShell window and test the connection locally against the loopback adapter:
    ```powershell
-   Get-NetIPAddress -AddressFamily IPv4 -PrefixLength 24 | Select-Object -ExpandProperty IPAddress
+   Test-NetConnection -ComputerName 127.0.0.1 -Port 5555
    ```
-2. From a **separate machine** on the same local network, test the connection using native PowerShell (replace `192.168.1.X` with the host IP found in the previous step):
-   ```powershell
-   Test-NetConnection -ComputerName 192.168.1.X -Port 5555
-   ```
-3. While that connection command is attempting to communicate, return to the terminal on your host machine and check the connection state:
+2. While that connection command is running or immediately after, open a separate terminal window and check the connection socket states:
    ```cmd
    netstat -ano | findstr /R "5555 5353 5223 8443"
    ```
 
-*Verification Check:* The connection test should return **`TcpTestSucceeded : True`**. On the host machine, you should now see an active connection row marked as **`ESTABLISHED`**. The trap will hold this connection open indefinitely.
+*Verification Check:* The connection test should return **`TcpTestSucceeded : True`**. In your network listener list, you should see an active connection row marked as **`ESTABLISHED`** showing `127.0.0.1:5555`. The trap will hold this socket open indefinitely.
 
 ---
 
