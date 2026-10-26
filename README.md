@@ -33,7 +33,7 @@ To ensure the binary runs permanently in the background with full system capabil
 
 ## Deployment Verification
 
-Run the following validation steps from an **Administrative Command Prompt** or **Administrative PowerShell** (Right-Click -> Run as Administrator) to verify that the defense system is live.
+Run the following validation steps from your Command Prompt or PowerShell to verify that the defense system is live.
 
 ### Step 1: Verify Active Network Listeners
 Confirm that the daemon has successfully claimed and locked down the targeted honey-pot ports:
@@ -49,8 +49,8 @@ Get-NetTCPConnection | Where-Object LocalPort -in 5555, 5353, 5223, 8443
 ```
 *Verification Check:* Look for lines marked as **`LISTENING`**. Note the Process ID (PID) displayed at the far right.
 
-### Step 2: Verify System Privilege Status
-Confirm that the binary is actively running under the protected system core context:
+### Step 2: Verify Background Process Status
+Confirm that the binary is actively running in the background:
 
 **Command Prompt:**
 ```cmd
@@ -59,9 +59,9 @@ tasklist /FI "IMAGENAME eq HelmholtzTrap.exe" /V
 
 **PowerShell:**
 ```powershell
-Get-Process -Name "HelmholtzTrap" -IncludeUserName | Select-Object ProcessName, Id, UserName
+Get-Process -Name "HelmholtzTrap"
 ```
-*Verification Check:* Confirm that the process is actively running and that the user context is explicitly verified as **`NT AUTHORITY\SYSTEM`**.
+*Verification Check:* Confirm that the process is actively listed with its unique ID (PID).
 
 ### Step 3: Verify the Resonator Trap Functionality
 Test whether the Helmholtz Resonance Chamber is actively intercepting attacks and exhausting remote system resources.
