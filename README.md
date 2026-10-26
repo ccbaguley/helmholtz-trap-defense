@@ -57,7 +57,7 @@ tasklist /FI "IMAGENAME eq HelmholtzTrap.exe" /V
 ```
 **PowerShell:**
 ```powershell
-Get-Process -Name "HelmholtzTrap" | IncludeUserName
+Get-Process -Name "HelmholtzTrap" | Select-Object Name, Id, @{Name="UserName";Expression={(Get-CimInstance Win32_Process -Filter "ProcessId=(_.Id)").GetOwner().User}}
 ```
 *Verification Check:* Confirm that the process is actively running and that the user context is explicitly set to **`NT AUTHORITY\SYSTEM`**.
 
