@@ -85,5 +85,33 @@ Test whether the Helmholtz Resonance Chamber is actively intercepting traffic an
 
 ---
 
+## Uninstallation Procedure
+
+To completely remove the Helmholtz Defense Framework from the system, execute the following commands from an **Administrative PowerShell** window.
+
+### Step 1: Remove the Windows Task Scheduler Task
+Stop and delete the background system service task instantly without forcing an interactive prompt:
+```powershell
+Unregister-ScheduledTask -TaskName "HelmholtzTrap" -Confirm:0
+```
+
+### Step 2: Remove Windows Firewall Rules
+Delete the custom inbound security rule created for the framework honey-pot ports:
+```powershell
+Remove-NetFirewallRule -DisplayName "Helmholtz Honeypot Ports"
+```
+
+### Step 3: Terminate Running Processes
+If the daemon is currently executing inside the active memory space, kill the background binary process forcefully:
+```powershell
+Stop-Process -Name "HelmholtzTrap" -Force -ErrorAction SilentlyContinue
+```
+
+### Step 4: Clean Up System Files
+Delete the compiled background executable binary file safely from your local distribution folder:
+```powershell
+Remove-Item -Path .\dist\HelmholtzTrap.exe -Force -ErrorAction SilentlyContinue
+```
+
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
