@@ -33,7 +33,9 @@ To ensure the binary runs permanently in the background with full system capabil
 
 ## Deployment Verification
 
-Run the following validation steps from an **Administrative Command Prompt** or **PowerShell** to verify that the defense system is live.
+Run the following validation steps from an **Administrative Command Prompt** or **Administrative PowerShell** to verify that the defense system is live. 
+
+*Note: Administrative elevation is strictly required to inspect processes running under the `SYSTEM` context.*
 
 ### Step 1: Verify Active Network Listeners
 Confirm that the daemon has successfully claimed and locked down the targeted honey-pot ports:
