@@ -21,7 +21,13 @@ Compile the script into a cloaked background executable with administrative auto
 python -m PyInstaller --onefile --noconsole --uac-admin HelmholtzTrap.py
 ```
 
-### Step 3: Configure Windows Task Scheduler
+### Step 3: Configure Windows Firewall
+Because the framework binds to specific connection ports, an inbound rule must be created to allow incoming network traffic to reach the daemon. Run this in an **Administrative PowerShell** window:
+```powershell
+New-NetFirewallRule -DisplayName "Helmholtz Honeypot Ports" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 5555, 5353, 5223, 8443
+```
+
+### Step 4: Configure Windows Task Scheduler
 To ensure the binary runs permanently in the background with full system capabilities:
 1. Open **Task Scheduler** as an Administrator.
 2. Click **Create Task** (not a Basic Task) and name it `HelmholtzTrap`.
@@ -64,18 +70,22 @@ Get-Process -Name "HelmholtzTrap"
 *Verification Check:* Confirm that the process is actively listed with its unique ID (PID).
 
 ### Step 3: Verify the Resonator Trap Functionality
-Test whether the Helmholtz Resonance Chamber is actively intercepting attacks and exhausting remote system resources.
+Test whether the Helmholtz Resonance Chamber is actively intercepting traffic and holding connection channels.
 
-1. From a **separate machine** or local WSL instance on the same network, attempt an explicit connection to one of your listening ports (e.g., port 5555):
-   ```bash
-   nc -v <TARGET_HOST_IP> 5555
+1. Find the local IP address of your host machine running the daemon by running this command in its PowerShell window (works across all network interfaces):
+   ```powershell
+   Get-NetIPAddress -AddressFamily IPv4 -PrefixLength 24 | Select-Object -ExpandProperty IPAddress
    ```
-2. While that connection is active, return to your terminal on the host machine and run:
+2. From a **separate machine** on the same local network, test the connection using native PowerShell (replace `192.168.1.X` with the host IP found in the previous step):
+   ```powershell
+   Test-NetConnection -ComputerName 192.168.1.X -Port 5555
+   ```
+3. While that connection command is attempting to communicate, return to the terminal on your host machine and check the connection state:
    ```cmd
    netstat -ano | findstr /R "5555 5353 5223 8443"
    ```
 
-*Verification Check:* You should now see an active connection row marked as **`ESTABLISHED`**. The trap will hold this connection open indefinitely, quietly flooding the remote target with loop telemetry to deplete their socket capacity.
+*Verification Check:* The connection test should return **`TcpTestSucceeded : True`**. On the host machine, you should now see an active connection row marked as **`ESTABLISHED`**. The trap will hold this connection open indefinitely.
 
 ---
 
