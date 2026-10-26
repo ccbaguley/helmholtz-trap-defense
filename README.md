@@ -33,9 +33,7 @@ To ensure the binary runs permanently in the background with full system capabil
 
 ## Deployment Verification
 
-Run the following validation steps from an **Administrative Command Prompt** or **Administrative PowerShell** to verify that the defense system is live. 
-
-*Note: Administrative elevation is strictly required to inspect processes running under the `SYSTEM` context.*
+Run the following validation steps from an **Administrative Command Prompt** or **Administrative PowerShell** (Right-Click -> Run as Administrator) to verify that the defense system is live.
 
 ### Step 1: Verify Active Network Listeners
 Confirm that the daemon has successfully claimed and locked down the targeted honey-pot ports:
@@ -52,7 +50,7 @@ Get-NetTCPConnection | Where-Object LocalPort -in 5555, 5353, 5223, 8443
 *Verification Check:* Look for lines marked as **`LISTENING`**. Note the Process ID (PID) displayed at the far right.
 
 ### Step 2: Verify System Privilege Status
-Ensure the process is actively executing under the protected system core context:
+Confirm that the binary is actively running under the protected system core context:
 
 **Command Prompt:**
 ```cmd
@@ -63,7 +61,7 @@ tasklist /FI "IMAGENAME eq HelmholtzTrap.exe" /V
 ```powershell
 Get-Process -Name "HelmholtzTrap" -IncludeUserName | Select-Object ProcessName, Id, UserName
 ```
-*Verification Check:* Confirm that the process is actively running and that the user context is explicitly set to **`NT AUTHORITY\SYSTEM`**.
+*Verification Check:* Confirm that the process is actively running and that the user context is explicitly verified as **`NT AUTHORITY\SYSTEM`**.
 
 ### Step 3: Verify the Resonator Trap Functionality
 Test whether the Helmholtz Resonance Chamber is actively intercepting attacks and exhausting remote system resources.
@@ -72,7 +70,7 @@ Test whether the Helmholtz Resonance Chamber is actively intercepting attacks an
    ```bash
    nc -v <TARGET_HOST_IP> 5555
    ```
-2. While that connection is active, return to your **Administrative terminal** on the host machine and run:
+2. While that connection is active, return to your terminal on the host machine and run:
    ```cmd
    netstat -ano | findstr /R "5555 5353 5223 8443"
    ```
