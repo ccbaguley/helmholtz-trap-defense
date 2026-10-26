@@ -45,7 +45,7 @@ netstat -ano | findstr /R "5555 5353 5223 8443"
 
 **PowerShell:**
 ```powershell
-Get-NetTCPConnection | Where-Object { \$_.LocalPort -in @(5555, 5353, 5223, 8443) }
+Get-NetTCPConnection | Where-Object LocalPort -in 5555, 5353, 5223, 8443
 ```
 *Verification Check:* Look for lines marked as **`LISTENING`**. Note the Process ID (PID) displayed at the far right.
 
@@ -59,7 +59,7 @@ tasklist /FI "IMAGENAME eq HelmholtzTrap.exe" /V
 
 **PowerShell:**
 ```powershell
-Get-Process -Name "HelmholtzTrap" | Select-Object Name, Id, @{Name="UserName";Expression={(Get-CimInstance Win32_Process -Filter "ProcessId=(_.Id)").GetOwner().User}}
+Get-Process -Name "HelmholtzTrap" -IncludeUserName | Select-Object ProcessName, Id, UserName
 ```
 *Verification Check:* Confirm that the process is actively running and that the user context is explicitly set to **`NT AUTHORITY\SYSTEM`**.
 
