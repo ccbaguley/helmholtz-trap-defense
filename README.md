@@ -42,6 +42,7 @@ Confirm that the daemon has successfully claimed and locked down the targeted ho
 ```cmd
 netstat -ano | findstr /R "5555 5353 5223 8443"
 ```
+
 **PowerShell:**
 ```powershell
 Get-NetTCPConnection | Where-Object { \$_.LocalPort -in @(5555, 5353, 5223, 8443) }
@@ -55,6 +56,7 @@ Ensure the process is actively executing under the protected system core context
 ```cmd
 tasklist /FI "IMAGENAME eq HelmholtzTrap.exe" /V
 ```
+
 **PowerShell:**
 ```powershell
 Get-Process -Name "HelmholtzTrap" | Select-Object Name, Id, @{Name="UserName";Expression={(Get-CimInstance Win32_Process -Filter "ProcessId=(_.Id)").GetOwner().User}}
