@@ -87,6 +87,36 @@ Test whether the Helmholtz Resonance Chamber is actively intercepting traffic an
 
 ---
 
+## Troubleshooting & Common Deployment Errors
+
+If you encounter initialization errors during compilation or task registration, look up the resolution matrix below.
+
+### 1. PyInstaller Administrative Compilation Restriction
+* **Symptoms:** 
+  ```text
+  DEPRECATION: Running PyInstaller as admin is not necessary nor sensible...
+  ERROR: Do not run pyinstaller from C:\Windows\system32.
+  ```
+* **Cause:** PyInstaller explicitly blocks compilation tasks executed within administrative windows or core system paths to prevent accidental binary corruptions.
+* **Resolution:** Close your elevated administrator window, open a standard user terminal instance, navigate cleanly to your repository folder workspace, and re-execute:
+  ```powershell
+  cd "$HOME\Documents\YourRepositoryPath"
+  python -m PyInstaller --onefile --noconsole HelmholtzTrap.py
+  ```
+
+### 2. Task Scheduler Account Mapping Fault (HRESULT 0x80070534)
+* **Symptoms:**
+  ```text
+  Register-ScheduledTask : No mapping between account names and security IDs was done.
+  ```
+* **Cause:** Your host environment is utilizing non-English, localized, or highly customized regional security strings, preventing Windows from correctly interpreting the default literal string `"NT AUTHORITY\SYSTEM"`.
+* **Resolution:** Run the commands as a single inline block using the universal Security Identifier (SID) sequence for the root system profile, which remains constant across all international language environments (`S-1-5-18`):
+  ```powershell
+  \(Action = New-ScheduledTaskAction -Execute "C:\ProgramData\HelmholtzDefense\HelmholtzTrap.exe"; \)Trigger = New-ScheduledTaskTrigger -AtStartup; Register-ScheduledTask -TaskName "HelmholtzTrap" -Action Action -Trigger Trigger -User "S-1-5-18" -RunLevel Highest -Force
+  ```
+
+---
+
 ## Uninstallation Procedure
 
 To completely remove the Helmholtz Defense Framework from the system, execute the following commands from an **Administrative PowerShell** window.
