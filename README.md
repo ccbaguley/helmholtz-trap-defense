@@ -1,11 +1,13 @@
 # Helmholtz Defense Framework
 
-An advanced, multi-threaded behavioral cyber-defense daemon designed to trap, isolate, and exhaust anomalous network intrusion vectors silently. 
+An advanced, multi-threaded behavioral cyber-defense daemon designed to trap, isolate, and exhaust anomalous network intrusion vectors silently.
 
 ## How It Works
 Instead of traditional static antivirus scanning, this framework employs:
 * **Orb Weaver Array:** A multi-threaded socket listener mapping real-world mobile vulnerability vectors (ADB `5555`, AirDrop `5353`, MDM `5223/8443`).
 * **Helmholtz Resonance Chamber:** An isolated sandbox trap that catches incoming connection streams, answering them with high-speed looping synthetic decoy telemetry to exhaust the attacker's resources safely without throwing alerts.
+
+---
 
 ## Installation & Deployment
 
@@ -16,9 +18,9 @@ pip install pyinstaller
 ```
 
 ### Step 2: Compile the Binary
-Compile the script into a cloaked background executable with administrative auto-elevation:
+Compile the script into a background executable. Note that when deploying as a persistent system task, the standard binary path handles automation directly:
 ```bash
-python -m PyInstaller --onefile --noconsole --uac-admin HelmholtzTrap.py
+python -m PyInstaller --onefile --noconsole HelmholtzTrap.py
 ```
 
 ### Step 3: Configure Windows Firewall
@@ -28,12 +30,13 @@ New-NetFirewallRule -DisplayName "Helmholtz Honeypot Ports" -Direction Inbound -
 ```
 
 ### Step 4: Configure Windows Task Scheduler
-To ensure the binary runs permanently in the background with full system capabilities:
-1. Open **Task Scheduler** as an Administrator.
-2. Click **Create Task** (not a Basic Task) and name it `HelmholtzTrap`.
-3. Under **Security options**, change the user account to **`SYSTEM`**.
-4. Set the **Trigger** to `At startup`.
-5. Set the **Action** to `Start a program` and point it to your compiled `HelmholtzTrap.exe` inside the `/dist` directory.
+To ensure the binary runs permanently in the background with full system privileges:
+1. Copy the compiled `HelmholtzTrap.exe` from your `.\dist` directory to a permanent system location, such as `C:\ProgramData\HelmholtzDefense\`.
+2. Open **Task Scheduler** as an Administrator.
+3. Click **Create Task** (not a Basic Task) and name it `HelmholtzTrap`.
+4. Under **Security options**, change the user account to **`SYSTEM`** and check **Run with highest privileges**.
+5. Set the **Trigger** to `At startup`.
+6. Set the **Action** to `Start a program` and point it to `C:\ProgramData\HelmholtzDefense\HelmholtzTrap.exe`.
 
 ---
 
@@ -70,18 +73,17 @@ Get-Process -Name "HelmholtzTrap"
 *Verification Check:* Confirm that the process is actively listed with its unique ID (PID).
 
 ### Step 3: Verify the Resonator Trap Functionality (Local Loopback Test)
-Test whether the Helmholtz Resonance Chamber is actively intercepting traffic and holding connection channels locally.
+Test whether the Helmholtz Resonance Chamber is actively intercepting traffic and feeding synthetic data back to the initiator.
 
-1. Open a PowerShell window and test the connection locally against the loopback adapter:
+1. Open a PowerShell window and stream data from one of the configured ports using an interactive web request:
    ```powershell
-   Test-NetConnection -ComputerName 127.0.0.1 -Port 5555
+   Invoke-WebRequest -Uri "http://127.0.0.1:5555" -MaximumRetryCount 0
    ```
-2. While that connection command is running or immediately after, open a separate terminal window and check the connection socket states:
+2. While the request attempts to read the stream, open a separate terminal window to verify the socket state:
    ```cmd
-   netstat -ano | findstr /R "5555 5353 5223 8443"
+   netstat -ano | findstr 5555
    ```
-
-*Verification Check:* The connection test should return **`TcpTestSucceeded : True`**. In your network listener list, you should see an active connection row marked as **`ESTABLISHED`** showing `127.0.0.1:5555`. The trap will hold this socket open indefinitely.
+*Verification Check:* The connection list should display a row matching `127.0.0.1:5555` with the state marked as **`ESTABLISHED`** while the loop handles the socket. Alternatively, verify that a new entry appears in `C:\ProgramData\HelmholtzDefense\system_defense_daemon.log`.
 
 ---
 
@@ -108,9 +110,9 @@ Stop-Process -Name "HelmholtzTrap" -Force -ErrorAction SilentlyContinue
 ```
 
 ### Step 4: Clean Up System Files
-Delete the compiled background executable binary file safely from your local distribution folder:
+Delete the runtime application and log files safely from the storage directory:
 ```powershell
-Remove-Item -Path .\dist\HelmholtzTrap.exe -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "C:\ProgramData\HelmholtzDefense" -Recurse -Force -ErrorAction SilentlyContinue
 ```
 
 ## License
