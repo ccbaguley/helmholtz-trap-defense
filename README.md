@@ -139,6 +139,24 @@ If the daemon is currently executing inside the active memory space, kill the ba
 Stop-Process -Name "HelmholtzTrap" -Force -ErrorAction SilentlyContinue
 ```
 
+# Helmholtz Defense Framework
+
+A multi-threaded behavioral network honeypot and resonance trap engineered to trap, identify, and exhaust anomalous network intrusion vectors.
+
+## How It Works
+
+- **HTTP Canary Web Trap:** A port listener (`Port 5353`) catching inbound browser connections from tracking tokens.
+- **Helmholtz Resonance Chamber:** An isolated socket sandbox that loops synthetic decoy logs to exhaust attacker resources.
+- **Unmasked Identification:** Captures true public IP addresses and User-Agent metrics natively.
+
+## Installation & Deployment
+
+1. **Firewall Rules:** Open inbound port `5353` via PowerShell.
+2. **Launch Grid:** Initialize `HelmholtzTrap.py`.
+3. **Embed Token:** Deploy a Google Apps Script Web App macro redirect pointing to your public IP and port.
+4. **Verification:** Run `Get-NetTCPConnection` to confirm the listener is active on port `5353`.
+
+
 ### Step 4: Clean Up System Files
 Delete the runtime application and log files safely from the storage directory:
 ```powershell
